@@ -66,8 +66,10 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="Lib\IndevModdingInterface.dll" />
+      <Content Include="Lib\IndevModdingInterface.pdb" />
       <Content Include="Lib\UnityEngine.CoreModule.dll" />
       <Content Include="Lib\UnityEngine.dll" />
+      <Content Include="Lib\UnityEngine.pdb" />
       <Content Include="Lib\UnityEngine.SharedInternalsModule.dll" />
       <Content Include="README.md" />
     </ItemGroup>
