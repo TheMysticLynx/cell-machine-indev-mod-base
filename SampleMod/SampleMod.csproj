@@ -33,14 +33,14 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="IndevModdingInterface">
-          <HintPath>Lib\IndevModdingInterface.dll</HintPath>
+        <Reference Include="IndevModdingInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\Indev.NET.7.0.2\lib\net4.8\IndevModdingInterface.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Xml" />
-        <Reference Include="UnityEngine">
-          <HintPath>Lib\UnityEngine.dll</HintPath>
+        <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\Indev.NET.7.0.2\lib\net4.8\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
           <HintPath>Lib\UnityEngine.CoreModule.dll</HintPath>
@@ -65,13 +65,10 @@
         <Compile Include="Source\StdModule.cs" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="Lib\IndevModdingInterface.dll" />
-      <Content Include="Lib\IndevModdingInterface.pdb" />
-      <Content Include="Lib\UnityEngine.CoreModule.dll" />
-      <Content Include="Lib\UnityEngine.dll" />
-      <Content Include="Lib\UnityEngine.pdb" />
-      <Content Include="Lib\UnityEngine.SharedInternalsModule.dll" />
       <Content Include="README.md" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
