@@ -57,6 +57,7 @@
         <Compile Include="Source\CellProcessors\TrashCell.cs" />
         <Compile Include="Source\CellProcessors\TroverCellProcessor.cs" />
         <Compile Include="Source\CellProcessors\WallCell.cs" />
+        <Compile Include="Source\LegacyFormatV3.cs" />
         <Compile Include="Source\StdModule.cs" />
     </ItemGroup>
     <ItemGroup>
