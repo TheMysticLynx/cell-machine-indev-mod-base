@@ -1,0 +1,71 @@
+name: Update Unity DLLs
+# For this action to work properly you must explicitly allow GitHub Actions to write to the repository and create pull requests.
+# These settings can be found in the repository's settings under Actions > General > Workflow permissions. Make sure you enable both "Read and write permissions" and "Allow GitHub Actions to create and approve pull requests".
+
+# You could activate this on cron or push too
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: (Optional) Unity version to extract DLLs from
+        type: string
+        required: false
+      create_pull_request:
+        description: Create a pull request with the extracted DLLs
+        type: boolean
+        default: true
+
+jobs:
+  unityDLLs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: repo
+    
+      - name: Get Unity version
+        if: inputs.version == ''
+        run: |
+          read -r CI_UNITY_VERSION CI_UNITY_CHANGESET <<< "$(npx --yes unity-changeset list | head -n 1 | tr -d '\n')"
+          echo "CI_UNITY_VERSION=$CI_UNITY_VERSION" >> "$GITHUB_ENV"
+          echo "CI_UNITY_CHANGESET=$CI_UNITY_CHANGESET" >> "$GITHUB_ENV"
+      
+      - name: Get Unity changeset
+        if: inputs.version != ''
+        run: |
+          CI_UNITY_VERSION='${{ inputs.version }}'
+          CI_UNITY_CHANGESET=$(npx --yes unity-changeset "$CI_UNITY_VERSION")
+          echo "CI_UNITY_VERSION=$CI_UNITY_VERSION" >> "$GITHUB_ENV"
+          echo "CI_UNITY_CHANGESET=$CI_UNITY_CHANGESET" >> "$GITHUB_ENV"
+
+      - name: Download and extract DLLs from Unity
+        run: |
+          wget -nv "https://download.unity3d.com/download_unity/$CI_UNITY_CHANGESET/LinuxEditorInstaller/Unity.tar.xz"
+          tar -xf Unity.tar.xz
+          mkdir extracted
+          mv Editor/Data/Managed/UnityEngine.dll extracted
+          mv Editor/Data/Managed/UnityEngine.pdb extracted
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll extracted
+          mv Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll extracted
+        
+      - name: Upload DLLs as a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: Extracted DLLs
+          path: extracted
+          if-no-files-found: error
+        
+      - name: Add extracted files to repo
+        if: inputs.create_pull_request == true
+        run: mv -f extracted/* repo/SampleMod/Lib
+
+      - name: Create pull request
+        if: inputs.create_pull_request == true
+        uses: peter-evans/create-pull-request@v5.0.1
+        with:
+          path: repo
+          commit-message: Update Unity DLLs to version ${{ env.CI_UNITY_VERSION }}
+          branch: updated-unity-dlls
+          title: Update Unity DLLs to ${{ env.CI_UNITY_VERSION }}
+          body: Unity DLLs extracted from Unity version `${{ env.CI_UNITY_VERSION }}` changeset `${{ env.CI_UNITY_CHANGESET }}`, triggered by @${{ github.actor }}.
+          delete-branch: true
